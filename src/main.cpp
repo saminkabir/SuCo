@@ -203,14 +203,15 @@ int main (int argc, char **argv)
     float * centroids_list = new float [kmeans_num_centroid * kmeans_dim * subspace_num * 2];
     vector<unordered_map<pair<int, int>, vector<int>, hash_pair>> indexes;
 
-    if (load_index == 1) { // load index from index_path
-        load_indexes(index_path, indexes, centroids_list, assignments_list, dataset_size, kmeans_dim, subspace_num, kmeans_num_centroid);
-    } else { // need to generate index and save it to index_path
-        // generate index
-        gen_indexes(data_list, indexes, dataset_size, centroids_list, assignments_list, kmeans_dim, subspace_num, kmeans_num_centroid, kmeans_num_iters, index_time);
-        // save index
-        save_indexes(index_path, centroids_list, assignments_list, dataset_size, kmeans_dim, subspace_num, kmeans_num_centroid);
-    }
+    // if (load_index == 1) { // load index from index_path
+    //     load_indexes(index_path, indexes, centroids_list, assignments_list, dataset_size, kmeans_dim, subspace_num, kmeans_num_centroid);
+    // } else { // need to generate index and save it to index_path
+    //     // generate index
+    //     gen_indexes(data_list, indexes, dataset_size, centroids_list, assignments_list, kmeans_dim, subspace_num, kmeans_num_centroid, kmeans_num_iters, index_time);
+    //     // save index
+    //     save_indexes(index_path, centroids_list, assignments_list, dataset_size, kmeans_dim, subspace_num, kmeans_num_centroid);
+    // }
+    gen_indexes(data_list, indexes, dataset_size, centroids_list, assignments_list, kmeans_dim, subspace_num, kmeans_num_centroid, kmeans_num_iters, index_time);
 
     delete []assignments_list;
     size_t RSS_after_indexing = getCurrentRSS() / 1000000; 
@@ -227,7 +228,8 @@ int main (int argc, char **argv)
         queryknn_results[i] = new int[k_size];
     }
 
-    int number_of_threads = parallel_query ? get_nprocs_conf() / 2 : 1;
+    // int number_of_threads = parallel_query ? get_nprocs_conf() / 2 : 1;
+    int number_of_threads = 1;
 
     ann_query(dataset, queryknn_results, dataset_size, data_dimensionality, query_size, k_size, querypoints, indexes, centroids_list, subspace_num, subspace_dimensionality, kmeans_num_centroid, kmeans_dim, collision_num, candidate_num, number_of_threads, query_time);
     
