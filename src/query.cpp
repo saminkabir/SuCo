@@ -81,7 +81,7 @@ void ann_query(float ** &dataset, int ** &queryknn_results, long int dataset_siz
                 update_score_layers(lbsc);
             } else {
                 // Multi-threaded dense parallel path
-                #pragma omp parallel for num_threads(number_of_threads)
+                // #pragma omp parallel for num_threads(number_of_threads)
                 for (size_t z = 0; z < retrieved_cell.size(); z++) {
                     auto it = indexes[j].find(retrieved_cell[z]);
                     if (it != indexes[j].end()) {
@@ -106,7 +106,7 @@ void ann_query(float ** &dataset, int ** &queryknn_results, long int dataset_siz
                 memset(local_collision_num_count[j], 0, (subspace_num + 1) * sizeof(int));
             }
 
-            #pragma omp parallel for num_threads(number_of_threads) schedule(static)
+            // #pragma omp parallel for num_threads(number_of_threads) schedule(static)
             for (long int j = 0; j < dataset_size; j++) {
                 int id = omp_get_thread_num();
                 local_collision_num_count[id][collision_count[j]]++;
@@ -134,7 +134,7 @@ void ann_query(float ** &dataset, int ** &queryknn_results, long int dataset_siz
                 local_candidate_idx[t].reserve(reserve_per_thread);
             }
 
-            #pragma omp parallel for num_threads(number_of_threads) schedule(static)
+            // #pragma omp parallel for num_threads(number_of_threads) schedule(static)
             for (long int j = 0; j < dataset_size; j++) {
                 int id = omp_get_thread_num();
                 if (collision_count[j] >= last_collision_num) {
@@ -154,7 +154,7 @@ void ann_query(float ** &dataset, int ** &queryknn_results, long int dataset_siz
 
         vector<float> candidate_dists(candidate_idx.size());
 
-        #pragma omp parallel for num_threads(number_of_threads)
+        // #pragma omp parallel for num_threads(number_of_threads)
         for (size_t j = 0; j < candidate_idx.size(); j++) {
             candidate_dists[j] = faiss::fvec_L2sqr_avx512(querypoints[i], dataset[candidate_idx[j]], data_dimensionality);
         }
